@@ -1,7 +1,8 @@
 package io.wonder.soft.example.actor
 
-import akka.actor.{Actor, ActorSystem, Props}
+import akka.actor.{Actor, ActorSystem, PoisonPill, Props}
 import akka.stream.{ActorMaterializer, Materializer}
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -21,7 +22,17 @@ class EchoActor extends Actor {
   implicit val materializer: Materializer = ActorMaterializer()
   val subEchoActor = system.actorOf(Props[SubEchoActor], s"sub-echo-actor")
 
+  val logger = LoggerFactory.getLogger(getClass.getName)
+
   var count = 0
+
+  override def preStart(): Unit = {
+    this.logger.info("starting actor")
+  }
+
+  override def postStop(): Unit = {
+    this.logger.info("stopping actor")
+  }
 
   def receive = {
     case EchoMessage(message) =>
