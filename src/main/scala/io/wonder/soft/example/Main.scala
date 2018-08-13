@@ -5,7 +5,7 @@ import akka.pattern.ask
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import akka.stream.{ActorMaterializer, Materializer}
 import akka.util.Timeout
-import io.wonder.soft.example.actor.{CountAsk, CustomMyClass, EchoActor, EchoMessage}
+import io.wonder.soft.example.actor._
 
 import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import scala.concurrent.duration._
@@ -93,11 +93,11 @@ trait Service {
   val routes =
     path("api" / "v1" / "status") {
       (get | post) {
-
-        echoActor ! 1
-        val future = echoActor ? CountAsk()
-        val result = Await.result(future, 6.seconds)
-        logger.info(s"counter: ${result}")
+          echoActor ! 'generate
+//        echoActor ! 1
+//        val future = echoActor ? CountAsk()
+//        val result = Await.result(future, 6.seconds)
+//        logger.info(s"counter: ${result}")
 
         complete("alive")
       }
@@ -127,7 +127,7 @@ object Main extends App with Service {
   override val logger = Logging(system, getClass)
 
   override val echoActor: ActorRef =
-    system.actorOf(Props[EchoActor], "echo-actor")
+    system.actorOf(Props[ParentEchoActor], "echo-parent-actor")
 
   Http().bindAndHandle(routes, "0.0.0.0", 8080)
 }
