@@ -11,7 +11,7 @@ scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 dependencyOverrides += "org.scala-lang" %% "scala-compiler" % scalaVersion.value
 
 libraryDependencies ++= {
-  val akkaV       = "2.5.8"
+  val akkaV       = "2.5.14"
   val akkaStreamV       = "10.1.0"
   Seq(
     "com.typesafe.akka" %% "akka-actor"              % akkaV,
