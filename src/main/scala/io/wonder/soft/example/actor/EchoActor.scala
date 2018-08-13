@@ -26,6 +26,10 @@ class ParentEchoActor extends Actor {
         this.logger.info("enter ArithmeticException")
         Stop
 
+      case re: RuntimeException      =>
+        this.logger.error("enter RuntimeException", re)
+        Restart
+
       case _: NullPointerException     =>
         this.logger.info("enter NullPointerException")
         Stop
@@ -67,7 +71,8 @@ class EchoActor extends Actor {
 
     case 'crash =>
       subEchoActor ! 'do_something
-      throw new ArithmeticException
+      //throw new ArithmeticException
+      throw new RuntimeException("crash it")
 
     case CountAsk() =>
       this.sender() ! this.count
@@ -78,14 +83,14 @@ class EchoActor extends Actor {
 
   }
 
-  class SubEchoActor extends Actor {
+}
 
-    def receive = {
-      case 'do_something =>
-        Thread.sleep(10000L)
-        println("some work finished")
-    }
+
+class SubEchoActor extends Actor {
+
+  def receive = {
+    case 'do_something =>
+      Thread.sleep(10000L)
+      println("some work finished")
   }
-
-
 }
